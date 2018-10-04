@@ -51,7 +51,7 @@
 #include "mainwidget.h"
 
 #include <QMouseEvent>
-
+#include <stdio.h>
 #include <math.h>
 
 MainWidget::MainWidget(QWidget *parent) :
@@ -98,6 +98,38 @@ void MainWidget::mouseReleaseEvent(QMouseEvent *e)
     angularSpeed += acc;
 }
 //! [0]
+
+void MainWidget::keyPressEvent(QKeyEvent *event)
+{
+    QMatrix4x4 matrix;
+
+    switch(event->key())
+    {
+        case Qt::Key_Left:
+            projection.translate(QVector3D(-1.0f, 0.0f, 0.0f));
+            break;
+
+        case Qt::Key_Right:
+            projection.translate(QVector3D(1.0f, 0.0f, 0.0f));
+            break;
+
+        case Qt::Key_Down:
+            projection.translate(QVector3D(0.0f, -1.0f, 0.0f));
+            break;
+
+        case Qt::Key_Up:
+            projection.translate(QVector3D(0.0f, 1.0f, 0.0f));
+            break;
+        case Qt::Key_E:
+            projection.translate(QVector3D(0.0f, 0.0f, 0.3f));
+            break;
+        case Qt::Key_A:
+            projection.translate(QVector3D(0.0f, 0.0f, -0.3f));
+            break;
+    }
+    update();
+}
+
 
 //! [1]
 void MainWidget::timerEvent(QTimerEvent *)
@@ -187,7 +219,7 @@ void MainWidget::resizeGL(int w, int h)
     qreal aspect = qreal(w) / qreal(h ? h : 1);
 
     // Set near plane to 3.0, far plane to 7.0, field of view 45 degrees
-    const qreal zNear = 2.0, zFar = 20.0, fov = 140.0;
+    const qreal zNear = 2.0, zFar = 15.0, fov = 140.0;
 
     // Reset projection
     projection.setToIdentity();
