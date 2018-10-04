@@ -49,9 +49,10 @@
 ****************************************************************************/
 
 #include "geometryengine.h"
-
+#include <QLabel>
 #include <QVector2D>
 #include <QVector3D>
+#include <iostream>
 
 struct VertexData
 {
@@ -86,6 +87,16 @@ void GeometryEngine::initPlaneGeometry()
 
     VertexData vertices[256];
     float X = 4.0;
+    float rImage = static_cast <float> (rand()) / (static_cast <float> (RAND_MAX/X));
+    QImage heightMap = QImage(16, 16, QImage::Format_Grayscale8);
+
+    for(int i =0; i < 16; i++){
+        for(int j =0; j < 16; j++){
+            heightMap.fill(static_cast <float> (rand()) / (static_cast <float> (RAND_MAX/X)));
+        }
+    }
+
+    //heightMap.fill(8);
     for( int i=0 ; i<16 ; i++ )
     {
         for( int j=0 ; j<16 ; j++ )
@@ -94,7 +105,8 @@ void GeometryEngine::initPlaneGeometry()
             float r = static_cast <float> (rand()) / (static_cast <float> (RAND_MAX/X));
             //float r2 = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
             //float r3 = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
-            vertices[i*16+j] = {QVector3D( i,  j,  r), QVector2D(i / 15.0, j / 15.0)};
+            std::cout<<heightMap.pixelColor(i,j).black()<<std::endl;
+            vertices[i*16+j] = {QVector3D( i,  j,  heightMap.pixelColor(i,j).black()), QVector2D(i / 15.0, j / 15.0)};
         }
     }
 
