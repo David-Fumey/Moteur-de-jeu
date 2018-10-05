@@ -52,12 +52,14 @@
 #include <QLabel>
 #include <QVector2D>
 #include <QVector3D>
+#include <QImage>
 #include <iostream>
 
 struct VertexData
 {
     QVector3D position;
     QVector2D texCoord;
+
 };
 
 //! [0]
@@ -69,6 +71,7 @@ GeometryEngine::GeometryEngine()
     // Generate 2 VBOs
     arrayBuf.create();
     indexBuf.create();
+
 
     // Initializes cube geometry and transfers it to VBOs
     //initCubeGeometry();
@@ -84,19 +87,15 @@ GeometryEngine::~GeometryEngine()
 
 void GeometryEngine::initPlaneGeometry()
 {
-
+    QImage image = QImage("C:/Users/david/Documents/GitHub/Moteur-de-jeu/tp1/hmin317-tp1-master/heightMap.png");
+/*
+    if(image.load("C:/Users/david/Documents/GitHub/Moteur-de-jeu/tp1/hmin317-tp1-master/heightMap.png")){
+        std::cout<<"success"<<std::endl;
+    }*/
     VertexData vertices[256];
     float X = 4.0;
-    float rImage = static_cast <float> (rand()) / (static_cast <float> (RAND_MAX/X));
-    QImage heightMap = QImage(16, 16, QImage::Format_Grayscale8);
+    float heightLimit = 255.0;
 
-    for(int i =0; i < 16; i++){
-        for(int j =0; j < 16; j++){
-            heightMap.fill(static_cast <float> (rand()) / (static_cast <float> (RAND_MAX/X)));
-        }
-    }
-
-    //heightMap.fill(8);
     for( int i=0 ; i<16 ; i++ )
     {
         for( int j=0 ; j<16 ; j++ )
@@ -105,22 +104,25 @@ void GeometryEngine::initPlaneGeometry()
             float r = static_cast <float> (rand()) / (static_cast <float> (RAND_MAX/X));
             //float r2 = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
             //float r3 = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
-            std::cout<<heightMap.pixelColor(i,j).black()<<std::endl;
-            vertices[i*16+j] = {QVector3D( i,  j,  heightMap.pixelColor(i,j).black()), QVector2D(i / 15.0, j / 15.0)};
+            vertices[i*16+j] = {QVector3D( 2*i/15.0-1,  2*j/15.0-1, image.pixelColor(i,j).value()/heightLimit), QVector2D(i / 15.0, j / 15.0)};
+            //std::cout<<image.pixelColor(i,j).value()/heightLimit<<std::endl;
         }
     }
 
-    GLushort indice[1536];
+
+    GLushort indice[1350];
 
     int k = 0;
     for( int i=0 ; i<15 ; i++ )
     {
         for( int j=0 ; j<15 ; j++ )
         {
+            /*
             if (j%16 != 0)
             {   indice[k] = i*16+j;
-                k++;} // dédoublement du premier pour liaison
-
+                k++;
+                std::cout<<"Indice["<<k<<"] du 1er if = "<<i*16+j<<std::endl;} // dédoublement du premier pour liaison
+*/
     // Triangle de la face
             /*
             indices.push_back(i*16 + j);
@@ -128,17 +130,44 @@ void GeometryEngine::initPlaneGeometry()
             indices.push_back(i*16 + j+16);
             indices.push_back(i*16 + j+1+16);
             */
+            /*
             indice[k] = i*16+j;
             k++;
+            std::cout<<"Indice["<<k<<"] = "<<i*16+j<<std::endl;
             indice[k] = i*16+j+1;
             k++;
+            std::cout<<"Indice["<<k<<"] = "<<i*16+j+1<<std::endl;
             indice[k] = i*16+j+16;
             k++;
+            std::cout<<"Indice["<<k<<"] = "<<i*16+j+16<<std::endl;
             indice[k] = i*16+j+1+16;
             k++;
-    if (j%15 != 0)
-    {  indice[k] = i*16+j+1+16;
-        k++; } // dédoublement du dernier pour liaison
+            std::cout<<"Indice["<<k<<"] = "<<i*16+j+1+16<<std::endl;
+
+            if ((i*16+j+1+16)%(15+(i*16)) != 0)
+                {  indice[k] = i*16+j+1+16;
+                    k++;
+                    std::cout<<"Indice["<<k<<"] du modulo 15  = "<<i*16+j+1+16<<std::endl;
+                } // dédoublement du dernier pour liaison   */
+            indice[k] = i*16+j;
+            //std::cout<<"Indice["<<k<<"] = "<<i*16+j<<std::endl;
+            k++;
+            indice[k] = i*16+j+1;
+            //std::cout<<"Indice["<<k<<"] = "<<i*16+j+1<<std::endl;
+            k++;
+            indice[k] = (i+1) * 16 + j;
+            //std::cout<<"Indice["<<k<<"] = "<<i*16+j+16<<std::endl;
+            k++;
+            indice[k] = i*16+j+1;
+            //std::cout<<"Indice["<<k<<"] = "<<i*16+j+1<<std::endl;
+            k++;
+            indice[k] = (i+1)*16 +j+1;
+            //std::cout<<"Indice["<<k<<"] = "<<i*16+j+16+1<<std::endl;
+            k++;
+            indice[k] = (i+1)*16+j;
+            //std::cout<<"Indice["<<k<<"] = "<<i*16+j+16<<std::endl;
+            k++;
+
         }
     }
 
@@ -161,7 +190,7 @@ void GeometryEngine::initPlaneGeometry()
 
     // Transfer index data to VBO 1
     indexBuf.bind();
-    indexBuf.allocate(indice, 1536 * sizeof(GLushort));
+    indexBuf.allocate(indice, 1350 * sizeof(GLushort));
 //! [1]
 
 }
@@ -269,7 +298,7 @@ void GeometryEngine::drawPlaneGeometry(QOpenGLShaderProgram *program)
     program->setAttributeBuffer(texcoordLocation, GL_FLOAT, offset, 2, sizeof(VertexData));
 
     // Draw cube geometry using indices from VBO 1
-    glDrawElements(GL_TRIANGLE_STRIP, 1536, GL_UNSIGNED_SHORT, 0);
+    glDrawElements(GL_TRIANGLES, 1350, GL_UNSIGNED_SHORT, 0);
 }
 
 /*

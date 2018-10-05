@@ -101,8 +101,6 @@ void MainWidget::mouseReleaseEvent(QMouseEvent *e)
 
 void MainWidget::keyPressEvent(QKeyEvent *event)
 {
-    QMatrix4x4 matrix;
-
     switch(event->key())
     {
         case Qt::Key_Left:
@@ -126,6 +124,9 @@ void MainWidget::keyPressEvent(QKeyEvent *event)
         case Qt::Key_A:
             projection.translate(QVector3D(0.0f, 0.0f, -0.3f));
             break;
+        case Qt::Key_R:
+            angularSpeed += 0.1;
+            break;
     }
     update();
 }
@@ -135,7 +136,7 @@ void MainWidget::keyPressEvent(QKeyEvent *event)
 void MainWidget::timerEvent(QTimerEvent *)
 {
     // Decrease angular speed (friction)
-    angularSpeed *= 0.99;
+    angularSpeed += 0.1;
 
     // Stop rotation when speed goes below threshold
     if (angularSpeed < 0.01) {
@@ -143,7 +144,6 @@ void MainWidget::timerEvent(QTimerEvent *)
     } else {
         // Update rotation
         rotation = QQuaternion::fromAxisAndAngle(rotationAxis, angularSpeed) * rotation;
-
         // Request an update
         update();
     }
@@ -219,7 +219,7 @@ void MainWidget::resizeGL(int w, int h)
     qreal aspect = qreal(w) / qreal(h ? h : 1);
 
     // Set near plane to 3.0, far plane to 7.0, field of view 45 degrees
-    const qreal zNear = 2.0, zFar = 15.0, fov = 140.0;
+    const qreal zNear = 3.0, zFar = 7.0, fov = 45.0;
 
     // Reset projection
     projection.setToIdentity();
@@ -239,9 +239,10 @@ void MainWidget::paintGL()
 //! [6]
     // Calculate model view transformation
     QMatrix4x4 matrix;
-    //matrix.lookAt(QVector3D(-6.0, -3.0, 0.0), QVector3D(0.0,0.0,0.0), QVector3D(0.0,0.0,5.0));
-    matrix.translate(-4.0, -4.0, -5.0);
+    matrix.lookAt(QVector3D(3.0*cos(angularSpeed), 3.0*sin(angularSpeed), 3.0), QVector3D(0.0,0.0,0.0), QVector3D(0.0,0.0,1.0));
+    //matrix.translate(-4.0, -4.0, -5.0);
     matrix.rotate(rotation);
+    //matrix.translate(QVector3D())
 
 
     // Set modelview-projection matrix
