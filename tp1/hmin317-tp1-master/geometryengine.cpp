@@ -87,7 +87,10 @@ GeometryEngine::~GeometryEngine()
 
 void GeometryEngine::initPlaneGeometry()
 {
-    QImage image = QImage("C:/Users/david/Documents/GitHub/Moteur-de-jeu/tp1/hmin317-tp1-master/heightMap.png");
+    // Chemin ordi portable
+    //QImage image = QImage("C:/Users/david/Documents/GitHub/Moteur-de-jeu/tp1/hmin317-tp1-master/heightMap.png");
+    // Chemin ordi fix
+    QImage image = QImage("F:/Cours/M2/Moteur de jeux/Moteur-de-jeu//tp1/hmin317-tp1-master/heightMap.png");
 /*
     if(image.load("C:/Users/david/Documents/GitHub/Moteur-de-jeu/tp1/hmin317-tp1-master/heightMap.png")){
         std::cout<<"success"<<std::endl;

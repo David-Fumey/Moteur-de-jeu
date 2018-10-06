@@ -53,12 +53,14 @@
 #include <QMouseEvent>
 #include <stdio.h>
 #include <math.h>
+#include <iostream>
 
-MainWidget::MainWidget(QWidget *parent) :
+MainWidget::MainWidget(QWidget *parent, int frame) :
     QOpenGLWidget(parent),
     geometries(0),
     texture(0),
-    angularSpeed(0)
+    angularSpeed(0),
+    fps(1000/frame)
 {
 }
 
@@ -169,8 +171,9 @@ void MainWidget::initializeGL()
 
     geometries = new GeometryEngine;
 
+    std::cout<<fps<<std::endl;
     // Use QBasicTimer because its faster than QTimer
-    timer.start(12, this);
+    timer.start(fps, this);
 }
 
 //! [3]
