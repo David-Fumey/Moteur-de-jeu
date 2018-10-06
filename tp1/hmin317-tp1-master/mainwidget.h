@@ -90,6 +90,7 @@ private:
     QOpenGLShaderProgram program;
     GeometryEngine *geometries;
     int fps;
+    float speed;
 
     QOpenGLTexture *texture;
 

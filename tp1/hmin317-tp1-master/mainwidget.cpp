@@ -60,7 +60,8 @@ MainWidget::MainWidget(QWidget *parent, int frame) :
     geometries(0),
     texture(0),
     angularSpeed(0),
-    fps(1000/frame)
+    fps(1000/frame),
+    speed(0.1)
 {
 }
 
@@ -127,7 +128,10 @@ void MainWidget::keyPressEvent(QKeyEvent *event)
             projection.translate(QVector3D(0.0f, 0.0f, -0.3f));
             break;
         case Qt::Key_R:
-            angularSpeed += 0.1;
+            speed += 0.01;
+            break;
+        case Qt::Key_T:
+            speed -= 0.01;
             break;
     }
     update();
@@ -138,7 +142,7 @@ void MainWidget::keyPressEvent(QKeyEvent *event)
 void MainWidget::timerEvent(QTimerEvent *)
 {
     // Decrease angular speed (friction)
-    angularSpeed += 0.1;
+    angularSpeed += speed;
 
     // Stop rotation when speed goes below threshold
     if (angularSpeed < 0.01) {
@@ -245,6 +249,7 @@ void MainWidget::paintGL()
     matrix.lookAt(QVector3D(3.0*cos(angularSpeed), 3.0*sin(angularSpeed), 3.0), QVector3D(0.0,0.0,0.0), QVector3D(0.0,0.0,1.0));
     //matrix.translate(-4.0, -4.0, -5.0);
     matrix.rotate(rotation);
+    std::cout<<angularSpeed<<std::endl;
     //matrix.translate(QVector3D())
 
 
