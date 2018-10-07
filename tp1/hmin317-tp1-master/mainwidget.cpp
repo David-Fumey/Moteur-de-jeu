@@ -175,7 +175,6 @@ void MainWidget::initializeGL()
 
     geometries = new GeometryEngine;
 
-    std::cout<<fps<<std::endl;
     // Use QBasicTimer because its faster than QTimer
     timer.start(fps, this);
 }
@@ -205,7 +204,9 @@ void MainWidget::initShaders()
 void MainWidget::initTextures()
 {
     // Load cube.png image
-    texture = new QOpenGLTexture(QImage(":/cube.png").mirrored());
+    //texture = new QOpenGLTexture(QImage(":/cube.png").mirrored());
+
+    texture = new QOpenGLTexture(QImage(":/degrade.png").mirrored());
 
     // Set nearest filtering mode for texture minification
     texture->setMinificationFilter(QOpenGLTexture::Nearest);
@@ -249,9 +250,11 @@ void MainWidget::paintGL()
     matrix.lookAt(QVector3D(3.0*cos(angularSpeed), 3.0*sin(angularSpeed), 3.0), QVector3D(0.0,0.0,0.0), QVector3D(0.0,0.0,1.0));
     //matrix.translate(-4.0, -4.0, -5.0);
     matrix.rotate(rotation);
-    std::cout<<angularSpeed<<std::endl;
     //matrix.translate(QVector3D())
 
+    // Light
+    //program.setUniformValue("ambiant_color", QVector4D(0.4, 0.4, 0.4, 1.0));
+    //program.setUniformValue("light_position", QVector4D(1.0, 1.0, 1.0, 1.0));
 
     // Set modelview-projection matrix
     program.setUniformValue("mvp_matrix", projection * matrix);
@@ -259,6 +262,9 @@ void MainWidget::paintGL()
 
     // Use texture unit 0 which contains cube.png
     program.setUniformValue("texture", 0);
+
+
+
 
     // Draw cube geometry
     //geometries->drawCubeGeometry(&program);

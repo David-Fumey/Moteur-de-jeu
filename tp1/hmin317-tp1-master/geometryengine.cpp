@@ -107,8 +107,9 @@ void GeometryEngine::initPlaneGeometry()
             float r = static_cast <float> (rand()) / (static_cast <float> (RAND_MAX/X));
             //float r2 = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
             //float r3 = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
-            vertices[i*16+j] = {QVector3D( 2*i/15.0-1,  2*j/15.0-1, image.pixelColor(i,j).value()/heightLimit), QVector2D(i / 15.0, j / 15.0)};
-            //std::cout<<image.pixelColor(i,j).value()/heightLimit<<std::endl;
+            //vertices[i*16+j] = {QVector3D( 2*i/15.0-1,  2*j/15.0-1, image.pixelColor(i,j).value()/heightLimit), QVector2D(i / 15.0, j / 15.0)};
+            vertices[i*16+j] = {QVector3D( 2*i/15.0-1,  2*j/15.0-1, image.pixelColor(i,j).value()/heightLimit), QVector2D(image.pixelColor(i,j).value()/heightLimit,image.pixelColor(i,j).value()/heightLimit)};
+            std::cout<<image.pixelColor(i,j).value()%16<<std::endl;
         }
     }
 
@@ -199,7 +200,7 @@ void GeometryEngine::initPlaneGeometry()
 }
 
 //! [0]
-/*
+
 void GeometryEngine::initCubeGeometry()
 {
     // For cube we would need only 8 vertices but we have to
@@ -270,7 +271,7 @@ void GeometryEngine::initCubeGeometry()
     indexBuf.allocate(indices, 34 * sizeof(GLushort));
 //! [1]
 }
-*/
+
 //! [2]
 
 void GeometryEngine::drawPlaneGeometry(QOpenGLShaderProgram *program)
@@ -304,7 +305,7 @@ void GeometryEngine::drawPlaneGeometry(QOpenGLShaderProgram *program)
     glDrawElements(GL_TRIANGLES, 1350, GL_UNSIGNED_SHORT, 0);
 }
 
-/*
+
 void GeometryEngine::drawCubeGeometry(QOpenGLShaderProgram *program)
 {
     // Tell OpenGL which VBOs to use
@@ -335,5 +336,5 @@ void GeometryEngine::drawCubeGeometry(QOpenGLShaderProgram *program)
     // Draw cube geometry using indices from VBO 1
     glDrawElements(GL_TRIANGLE_STRIP, 34, GL_UNSIGNED_SHORT, 0);
 }
-*/
+
 //! [2]

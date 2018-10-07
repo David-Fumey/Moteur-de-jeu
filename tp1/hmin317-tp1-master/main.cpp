@@ -67,20 +67,24 @@ int main(int argc, char *argv[])
 
     app.setApplicationVersion("0.1");
 #ifndef QT_NO_OPENGL
-    /*
-    app.setApplicationName("cube : 1 fps");
+/*
+    // Affichage du terrain à 1 FPS
+    app.setApplicationName("Terrain : 1 fps");
     MainWidget widget1(0, 1);
     widget1.show();
-
-    app.setApplicationName("cube : 10 fps");
+*/
+    // Affichage du terrain à 10 FPS
+    app.setApplicationName("Terrain : 10 fps");
     MainWidget widget2(0,10);
     widget2.show();
-*/
-    app.setApplicationName("cube : 100 fps");
+/*
+    // Affichage du terrain à 100 FPS
+    app.setApplicationName("Terrain : 100 fps");
     MainWidget widget3(0,100);
     widget3.show();
-/*
-    app.setApplicationName("cube : 1000 fps");
+
+    // Affichage du terrain à 1000 FPS
+    app.setApplicationName("Terrain : 1000 fps");
     MainWidget widget4(0,1000);
     widget4.show();
 */
